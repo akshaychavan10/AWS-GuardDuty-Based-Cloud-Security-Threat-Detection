@@ -8,13 +8,13 @@ This project demonstrates how to use **Amazon GuardDuty**, an AI-powered threat 
 
 To simulate a real-world environment, I used **AWS CloudFormation** to deploy a vulnerable version of the **OWASP Juice Shop**.
 
-![[infra.png]]
+![infra.png](./media/infra.png)
 
 - **Infrastructure as Code (IaC):** Used a template to instantly deploy **27 resources**, including a VPC, an EC2 instance (web server), an S3 bucket (storage), and a CloudFront distribution.
 - **Resource Roles:** The EC2 instance acted as the engine for the web app and was granted IAM permissions to access a private S3 bucket containing "sensitive" information.
 - **GuardDuty Setup:** Amazon GuardDuty was enabled at the start to monitor the environment for unusual activity.
 
-![[Phase 1.png]]
+![Phase 1.png](./media/Phase 1.png)
 
 ### **2. The Attack Phase (Hacker Mode)**
 
