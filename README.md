@@ -22,17 +22,18 @@ The objective was to exploit the web application to steal the EC2 instance's IAM
 
 - **Step A: SQL Injection:** I bypassed the administrative login page by entering `' or 1=1--` into the email field. This manipulated the database query to always evaluate as **True**, granting access without a valid password.
 
-![[SQL Inj login.png]]
+![SQL_Login.png](./media/SQL_Login.png)
 
-![[admin access.png]]
+![admin access.png](./media/admin_access.png)
 
 - **Step B: Command Injection:** Once logged in, I navigated to the profile page and injected a **JavaScript script** into the username field. Because the application failed to **sanitize user inputs**, the web server executed the code, which exfiltrated its temporary **IAM credentials** into a publicly accessible `credentials.json` file.
 
-![[cmd injection.png]]
+![cmd injection.png](./media/cmd_injection.png)
 
 - **Step C: Credential Exfiltration:** I accessed the public URL for `credentials.json` to obtain the **Access Key ID, Secret Access Key, and Session Token**.
 
-![[s3 bucket secrets download.png]]
+![s3 bucket secrets download.png](./media/bucket_secrets.png)
+
 ### **3. Data Breach Execution**
 
 Using the stolen credentials, I moved to the **AWS Command Line Interface (CLI)** via **Cloud Shell** to impersonate the web server.
@@ -40,13 +41,13 @@ Using the stolen credentials, I moved to the **AWS Command Line Interface (CLI)*
 - **Configuration:** I configured a new AWS CLI profile named **"attacker"** using the exfiltrated keys.
 - **The Theft:** Wearing these credentials "like a suit," I bypassed standard permissions to access the victim's private S3 bucket. I successfully copied and read the contents of `secret-information.txt`, confirming the data breach.
 
-![[s3 bucket's secret file access.png]]
+![s3 bucket's secret file access.png](./media/file_access.png)
 
 ### **4. The Defense Phase (Detection and Analysis)**
 
 After the attack, I transitioned back to the **Defender** role to evaluate how AWS monitored the incident.
 
-![[guardduty findings.png]]
+![guardduty findings.png](./media/guardduty_findings.png)
 
 - **GuardDuty Finding:** GuardDuty successfully generated a high-severity finding titled **"InstanceCredentialExfiltration"**.
 - **Anomaly Detection:** The service used **Machine Learning** to detect that credentials belonging to my EC2 instance were being used by a different, remote AWS account (the Cloud Shell environment).
@@ -56,12 +57,12 @@ After the attack, I transitioned back to the **Defender** role to evaluate how A
 
 To enhance the security posture, I enabled **GuardDuty Malware Protection for S3**.
 
-![[eicar file upload.png]]
+![eicar file upload.png](./media/eicar_upload.png)
 
 - **Testing:** I uploaded a harmless **EICAR test file** (designed to trigger antivirus software) to the S3 bucket.
 - **Result:** GuardDuty instantly flagged the file with a **"Malicious file in S3"** finding, demonstrating its ability to scan and protect storage resources from harmful uploads.
 
-![[eicar finding.png]]
+![eicar finding.png](./media/eicar_finding.png)
 
 ---
 
@@ -74,4 +75,4 @@ To enhance the security posture, I enabled **GuardDuty Malware Protection for S3
 
 ---
 
-**Analogy for Portfolio Viewers:** This project is like testing the security of a high-tech bank. First, I acted as the thief who found a back door (SQL injection) and tricked the staff into handing over a manager’s keycard (Command injection). Then, I switched roles to the bank’s security chief to review the AI-powered surveillance footage (GuardDuty). The project proved that while a thief might find a way in, a smart security system will recognize the unusual behavior and sound the alarm.
+**Analogy for the project:** This project is like testing the security of a high-tech bank. First, I acted as the thief who found a back door (SQL injection) and tricked the staff into handing over a manager’s keycard (Command injection). Then, I switched roles to the bank’s security chief to review the AI-powered surveillance footage (GuardDuty). The project proved that while a thief might find a way in, a smart security system will recognize the unusual behavior and sound the alarm.
