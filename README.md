@@ -14,7 +14,7 @@ To simulate a real-world environment, I used **AWS CloudFormation** to deploy a 
 - **Resource Roles:** The EC2 instance acted as the engine for the web app and was granted IAM permissions to access a private S3 bucket containing "sensitive" information.
 - **GuardDuty Setup:** Amazon GuardDuty was enabled at the start to monitor the environment for unusual activity.
 
-![Phase 1.png](./media/Phase 1.png)
+![Phase 1.png](./media/Phase_1.png)
 
 ### **2. The Attack Phase (Hacker Mode)**
 
